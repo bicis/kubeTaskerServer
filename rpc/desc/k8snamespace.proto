@@ -2,6 +2,14 @@ syntax = "proto3";
 
 import "k8s.io/api@v0.28.4/core/v1/generated.proto";
 
+message CreateNamespaceReq {
+  k8s.io.api.core.v1.Namespace namespace = 1;
+}
+
+message CreateNamespaceResp {
+  string msg = 1;
+}
+
 message GetNamespacesReq { //获取namespace列表
   string filterName = 1;
   int64 page = 2;
@@ -41,6 +49,8 @@ message DeleteNamespaceResp {
 }
 
 service Core {
+  //group: k8snamespace
+  rpc createNamespace (CreateNamespaceReq) returns (CreateNamespaceResp);
   //group: k8snamespace
   rpc getNamespaces (GetNamespacesReq) returns (GetNamespacesResp);
   //group: k8snamespace

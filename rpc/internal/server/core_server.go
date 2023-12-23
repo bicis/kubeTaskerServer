@@ -223,6 +223,11 @@ func (s *CoreServer) GetDeployNumPerNp(ctx context.Context, in *core.GetDeployNu
 	return l.GetDeployNumPerNp(in)
 }
 
+func (s *CoreServer) CreateNamespace(ctx context.Context, in *core.CreateNamespaceReq) (*core.CreateNamespaceResp, error) {
+	l := k8snamespace.NewCreateNamespaceLogic(ctx, s.svcCtx)
+	return l.CreateNamespace(in)
+}
+
 func (s *CoreServer) GetNamespaces(ctx context.Context, in *core.GetNamespacesReq) (*core.GetNamespacesResp, error) {
 	l := k8snamespace.NewGetNamespacesLogic(ctx, s.svcCtx)
 	return l.GetNamespaces(in)

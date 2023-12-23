@@ -55,6 +55,7 @@ const (
 	Core_RestartDeployment_FullMethodName                   = "/core.Core/restartDeployment"
 	Core_UpdateDeployment_FullMethodName                    = "/core.Core/updateDeployment"
 	Core_GetDeployNumPerNp_FullMethodName                   = "/core.Core/getDeployNumPerNp"
+	Core_CreateNamespace_FullMethodName                     = "/core.Core/createNamespace"
 	Core_GetNamespaces_FullMethodName                       = "/core.Core/getNamespaces"
 	Core_GetNamespaceDetail_FullMethodName                  = "/core.Core/getNamespaceDetail"
 	Core_DeleteNamespace_FullMethodName                     = "/core.Core/deleteNamespace"
@@ -188,6 +189,8 @@ type CoreClient interface {
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentReq, opts ...grpc.CallOption) (*UpdateDeploymentResp, error)
 	// group: k8sdeployment
 	GetDeployNumPerNp(ctx context.Context, in *GetDeployNumPerNpReq, opts ...grpc.CallOption) (*GetDeployNumPerNpResp, error)
+	// group: k8snamespace
+	CreateNamespace(ctx context.Context, in *CreateNamespaceReq, opts ...grpc.CallOption) (*CreateNamespaceResp, error)
 	// group: k8snamespace
 	GetNamespaces(ctx context.Context, in *GetNamespacesReq, opts ...grpc.CallOption) (*GetNamespacesResp, error)
 	// group: k8snamespace
@@ -623,6 +626,15 @@ func (c *coreClient) UpdateDeployment(ctx context.Context, in *UpdateDeploymentR
 func (c *coreClient) GetDeployNumPerNp(ctx context.Context, in *GetDeployNumPerNpReq, opts ...grpc.CallOption) (*GetDeployNumPerNpResp, error) {
 	out := new(GetDeployNumPerNpResp)
 	err := c.cc.Invoke(ctx, Core_GetDeployNumPerNp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreClient) CreateNamespace(ctx context.Context, in *CreateNamespaceReq, opts ...grpc.CallOption) (*CreateNamespaceResp, error) {
+	out := new(CreateNamespaceResp)
+	err := c.cc.Invoke(ctx, Core_CreateNamespace_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1169,6 +1181,8 @@ type CoreServer interface {
 	// group: k8sdeployment
 	GetDeployNumPerNp(context.Context, *GetDeployNumPerNpReq) (*GetDeployNumPerNpResp, error)
 	// group: k8snamespace
+	CreateNamespace(context.Context, *CreateNamespaceReq) (*CreateNamespaceResp, error)
+	// group: k8snamespace
 	GetNamespaces(context.Context, *GetNamespacesReq) (*GetNamespacesResp, error)
 	// group: k8snamespace
 	GetNamespaceDetail(context.Context, *GetNamespaceDetailReq) (*GetNamespaceDetailResp, error)
@@ -1389,6 +1403,9 @@ func (UnimplementedCoreServer) UpdateDeployment(context.Context, *UpdateDeployme
 }
 func (UnimplementedCoreServer) GetDeployNumPerNp(context.Context, *GetDeployNumPerNpReq) (*GetDeployNumPerNpResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeployNumPerNp not implemented")
+}
+func (UnimplementedCoreServer) CreateNamespace(context.Context, *CreateNamespaceReq) (*CreateNamespaceResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNamespace not implemented")
 }
 func (UnimplementedCoreServer) GetNamespaces(context.Context, *GetNamespacesReq) (*GetNamespacesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNamespaces not implemented")
@@ -2200,6 +2217,24 @@ func _Core_GetDeployNumPerNp_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreServer).GetDeployNumPerNp(ctx, req.(*GetDeployNumPerNpReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Core_CreateNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNamespaceReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreServer).CreateNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Core_CreateNamespace_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreServer).CreateNamespace(ctx, req.(*CreateNamespaceReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3272,6 +3307,10 @@ var Core_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getDeployNumPerNp",
 			Handler:    _Core_GetDeployNumPerNp_Handler,
+		},
+		{
+			MethodName: "createNamespace",
+			Handler:    _Core_CreateNamespace_Handler,
 		},
 		{
 			MethodName: "getNamespaces",

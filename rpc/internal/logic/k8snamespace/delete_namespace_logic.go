@@ -27,7 +27,7 @@ func NewDeleteNamespaceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 func (l *DeleteNamespaceLogic) DeleteNamespace(in *core.DeleteNamespaceReq) (*core.DeleteNamespaceResp, error) {
 	// todo: add your logic here and delete this line
-	err := l.svcCtx.K8s.CoreV1().Namespaces().Delete(context.TODO(), in.NamespaceName, metav1.DeleteOptions{})
+	err := l.svcCtx.K8s.CoreV1().Namespaces().Delete(l.ctx, in.NamespaceName, metav1.DeleteOptions{})
 	if err != nil {
 		l.Logger.Error(errors.New("获取Namespace详情失败, " + err.Error()))
 		return &core.DeleteNamespaceResp{

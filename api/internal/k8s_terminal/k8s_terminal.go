@@ -62,7 +62,7 @@ func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 			Stderr:    true,
 			TTY:       true,
 			Container: containerName,
-			Command:   []string{"/bin/bash"},
+			Command:   []string{"/usr/bin/bash"},
 		}, scheme.ParameterCodec)
 	logger.Info("exec post request url: ", req)
 

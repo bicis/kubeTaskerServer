@@ -53,11 +53,11 @@ func initKubeClient(k8sConfig *K8sConfig) (err error) {
 }
 
 func ReturnK8sConfig() (*K8sConfig, error) {
-	var k8sConfig *K8sConfig
-	initKubeClientConfig(k8sConfig)
-	err := initKubeClient(k8sConfig)
+	var k8sConfig K8sConfig
+	initKubeClientConfig(&k8sConfig)
+	err := initKubeClient(&k8sConfig)
 	if err != nil {
 		return nil, err
 	}
-	return k8sConfig, nil
+	return &k8sConfig, nil
 }

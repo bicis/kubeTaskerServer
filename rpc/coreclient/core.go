@@ -23,6 +23,8 @@ type (
 	CallbackReq              = core.CallbackReq
 	CreateDeploymentReq      = core.CreateDeploymentReq
 	CreateDeploymentResp     = core.CreateDeploymentResp
+	CreateNamespaceReq       = core.CreateNamespaceReq
+	CreateNamespaceResp      = core.CreateNamespaceResp
 	CreateServiceReq         = core.CreateServiceReq
 	CreateServiceResp        = core.CreateServiceResp
 	DeleteConfigMapReq       = core.DeleteConfigMapReq
@@ -171,6 +173,7 @@ type (
 		RestartDeployment(ctx context.Context, in *RestartDeploymentReq, opts ...grpc.CallOption) (*RestartDeploymentResp, error)
 		UpdateDeployment(ctx context.Context, in *UpdateDeploymentReq, opts ...grpc.CallOption) (*UpdateDeploymentResp, error)
 		GetDeployNumPerNp(ctx context.Context, in *GetDeployNumPerNpReq, opts ...grpc.CallOption) (*GetDeployNumPerNpResp, error)
+		CreateNamespace(ctx context.Context, in *CreateNamespaceReq, opts ...grpc.CallOption) (*CreateNamespaceResp, error)
 		GetNamespaces(ctx context.Context, in *GetNamespacesReq, opts ...grpc.CallOption) (*GetNamespacesResp, error)
 		GetNamespaceDetail(ctx context.Context, in *GetNamespaceDetailReq, opts ...grpc.CallOption) (*GetNamespaceDetailResp, error)
 		DeleteNamespace(ctx context.Context, in *DeleteNamespaceReq, opts ...grpc.CallOption) (*DeleteNamespaceResp, error)
@@ -422,6 +425,11 @@ func (m *defaultCore) UpdateDeployment(ctx context.Context, in *UpdateDeployment
 func (m *defaultCore) GetDeployNumPerNp(ctx context.Context, in *GetDeployNumPerNpReq, opts ...grpc.CallOption) (*GetDeployNumPerNpResp, error) {
 	client := core.NewCoreClient(m.cli.Conn())
 	return client.GetDeployNumPerNp(ctx, in, opts...)
+}
+
+func (m *defaultCore) CreateNamespace(ctx context.Context, in *CreateNamespaceReq, opts ...grpc.CallOption) (*CreateNamespaceResp, error) {
+	client := core.NewCoreClient(m.cli.Conn())
+	return client.CreateNamespace(ctx, in, opts...)
 }
 
 func (m *defaultCore) GetNamespaces(ctx context.Context, in *GetNamespacesReq, opts ...grpc.CallOption) (*GetNamespacesResp, error) {
