@@ -6,7 +6,6 @@ import (
 )
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 
@@ -24,7 +23,7 @@ type ConfigMapsResp struct {
 // 获取configmap列表，支持过滤、排序、分页
 func (c *ConfigMap) GetConfigMaps(l *GetConfigMapsLogic, in *core.GetConfigMapsReq) (resp *core.GetConfigMapsResp, err error) {
 	//获取configMapList类型的configMap列表
-	configMapList, err := l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).List(context.TODO(), metav1.ListOptions{})
+	configMapList, err := l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		l.Error(errors.New("获取ConfigMap列表失败: " + err.Error()))
 		return &core.GetConfigMapsResp{
@@ -67,7 +66,7 @@ func (c *ConfigMap) GetConfigMaps(l *GetConfigMapsLogic, in *core.GetConfigMapsR
 
 // 获取configmap详情
 func (c *ConfigMap) GetConfigMapDetail(l *GetConfigMapDetailLogic, in *core.GetConfigMapDetailReq) (resp *core.GetConfigMapDetailResp, err error) {
-	configMap, err := l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Get(context.TODO(), in.ConfigMapName, metav1.GetOptions{})
+	configMap, err := l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Get(l.ctx, in.ConfigMapName, metav1.GetOptions{})
 	if err != nil {
 		l.Error(errors.New("获取ConfigMap详情失败, " + err.Error()))
 		return &core.GetConfigMapDetailResp{
@@ -83,7 +82,7 @@ func (c *ConfigMap) GetConfigMapDetail(l *GetConfigMapDetailLogic, in *core.GetC
 
 // 删除configmap
 func (c *ConfigMap) DeleteConfigMap(l *DeleteConfigMapLogic, in *core.DeleteConfigMapReq) (resp *core.DeleteConfigMapResp, err error) {
-	err = l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Delete(context.TODO(), in.ConfigMapName, metav1.DeleteOptions{})
+	err = l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Delete(l.ctx, in.ConfigMapName, metav1.DeleteOptions{})
 	if err != nil {
 		l.Error(errors.New("删除ConfigMap失败: " + err.Error()))
 		return &core.DeleteConfigMapResp{
@@ -107,7 +106,7 @@ func (c *ConfigMap) UpdateConfigMap(l *UpdateConfigMapLogic, in *core.UpdateConf
 		}, errors.New("反序列化失败, " + err.Error())
 	}
 
-	_, err = l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Update(context.TODO(), configMap, metav1.UpdateOptions{})
+	_, err = l.svcCtx.K8s.CoreV1().ConfigMaps(in.Namespace).Update(l.ctx, configMap, metav1.UpdateOptions{})
 	if err != nil {
 		l.Error(errors.New("更新ConfigMap失败, " + err.Error()))
 		return &core.UpdateConfigMapResp{

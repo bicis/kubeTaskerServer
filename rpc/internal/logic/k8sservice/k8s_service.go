@@ -1,7 +1,6 @@
 package k8sservice
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/types/core"
@@ -15,7 +14,7 @@ type Service struct{}
 // 获取service列表，支持过滤、排序、分页
 func (s *Service) GetServices(l *GetServicesLogic, in *core.GetServicesReq) (resp *core.GetServicesResp, err error) {
 	//获取serviceList类型的service列表
-	serviceList, err := l.svcCtx.K8s.CoreV1().Services(in.Namespace).List(context.TODO(), metav1.ListOptions{})
+	serviceList, err := l.svcCtx.K8s.CoreV1().Services(in.Namespace).List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		l.Error(errors.New("获取Service列表失败, " + err.Error()))
 		return &core.GetServicesResp{
@@ -56,7 +55,7 @@ func (s *Service) GetServices(l *GetServicesLogic, in *core.GetServicesReq) (res
 
 // 获取service详情
 func (s *Service) GetServiceDetail(l *GetServiceDetailLogic, in *core.GetServiceDetailReq) (resp *core.GetServiceDetailResp, err error) {
-	service, err := l.svcCtx.K8s.CoreV1().Services(in.Namespace).Get(context.TODO(), in.ServiceName, metav1.GetOptions{})
+	service, err := l.svcCtx.K8s.CoreV1().Services(in.Namespace).Get(l.ctx, in.ServiceName, metav1.GetOptions{})
 	if err != nil {
 		l.Error(errors.New("获取Service详情失败, " + err.Error()))
 		return &core.GetServiceDetailResp{
@@ -103,7 +102,7 @@ func (s *Service) CreateService(l *CreateServiceLogic, in *core.CreateServiceReq
 		service.Spec.Ports[0].NodePort = int32(in.NodePort)
 	}
 	//创建Service
-	_, err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Create(context.TODO(), service, metav1.CreateOptions{})
+	_, err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Create(l.ctx, service, metav1.CreateOptions{})
 	if err != nil {
 		l.Error(errors.New("创建Service失败, " + err.Error()))
 		return &core.CreateServiceResp{
@@ -118,7 +117,7 @@ func (s *Service) CreateService(l *CreateServiceLogic, in *core.CreateServiceReq
 
 // 删除service
 func (s *Service) DeleteService(l *DeleteServiceLogic, in *core.DeleteServiceReq) (resp *core.DeleteServiceResp, err error) {
-	err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Delete(context.TODO(), in.ServiceName, metav1.DeleteOptions{})
+	err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Delete(l.ctx, in.ServiceName, metav1.DeleteOptions{})
 	if err != nil {
 		l.Error(errors.New("删除Service失败, " + err.Error()))
 		return &core.DeleteServiceResp{
@@ -143,7 +142,7 @@ func (s *Service) UpdateService(l *UpdateServiceLogic, in *core.UpdateServiceReq
 		}, errors.New("反序列化失败, " + err.Error())
 	}
 
-	_, err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Update(context.TODO(), service, metav1.UpdateOptions{})
+	_, err = l.svcCtx.K8s.CoreV1().Services(in.Namespace).Update(l.ctx, service, metav1.UpdateOptions{})
 	if err != nil {
 		l.Error(errors.New("更新service失败, " + err.Error()))
 		return &core.UpdateServiceResp{

@@ -1,7 +1,6 @@
 package k8sdeployment
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -20,7 +19,7 @@ type Deployment struct{}
 // GetDeployments 获取deployment列表，支持过滤、排序、分页
 func (d *Deployment) GetDeployments(l *GetDeploymentsLogic, in *core.GetDeploymentsReq) (resp *core.GetDeploymentsResp, err error) {
 	//获取deploymentList类型的deployment列表
-	deploymentList, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).List(context.TODO(), metav1.ListOptions{})
+	deploymentList, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		l.Error(errors.New("获取Deployment列表失败, " + err.Error()))
 		return &core.GetDeploymentsResp{
@@ -62,7 +61,7 @@ func (d *Deployment) GetDeployments(l *GetDeploymentsLogic, in *core.GetDeployme
 
 // 获取deployment详情
 func (d *Deployment) GetDeploymentDetail(l *GetDeploymentDetailLogic, in *core.GetDeploymentDetailReq) (resp *core.GetDeploymentDetailResp, err error) {
-	deployment, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Get(context.TODO(), in.DeploymentName, metav1.GetOptions{})
+	deployment, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Get(l.ctx, in.DeploymentName, metav1.GetOptions{})
 	if err != nil {
 		l.Error(errors.New("获取Deployment详情失败, " + err.Error()))
 		return &core.GetDeploymentDetailResp{
@@ -79,7 +78,7 @@ func (d *Deployment) GetDeploymentDetail(l *GetDeploymentDetailLogic, in *core.G
 // 设置deployment副本数
 func (d *Deployment) ScaleDeployment(l *ScaleDeploymentLogic, in *core.ScaleDeploymentReq) (resp *core.ScaleDeploymentResp, err error) {
 	//获取autoscalingv1.Scale类型的对象，能点出当前的副本数
-	scale, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).GetScale(context.TODO(), in.DeploymentName, metav1.GetOptions{})
+	scale, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).GetScale(l.ctx, in.DeploymentName, metav1.GetOptions{})
 	if err != nil {
 		l.Error(errors.New("获取Deployment副本数信息失败, " + err.Error()))
 		return &core.ScaleDeploymentResp{
@@ -90,7 +89,7 @@ func (d *Deployment) ScaleDeployment(l *ScaleDeploymentLogic, in *core.ScaleDepl
 	//修改副本数
 	scale.Spec.Replicas = int32(in.ScaleNum)
 	//更新副本数，传入scale对象
-	newScale, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).UpdateScale(context.TODO(), in.DeploymentName, scale, metav1.UpdateOptions{})
+	newScale, err := l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).UpdateScale(l.ctx, in.DeploymentName, scale, metav1.UpdateOptions{})
 	if err != nil {
 		l.Error(errors.New("更新Deployment副本数信息失败, " + err.Error()))
 		return &core.ScaleDeploymentResp{
@@ -198,7 +197,7 @@ func (d *Deployment) CreateDeployment(l *CreateDeploymentLogic, in *core.CreateD
 	}
 	//调用sdk创建deployment
 	_, err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).
-		Create(context.TODO(), deployment, metav1.CreateOptions{})
+		Create(l.ctx, deployment, metav1.CreateOptions{})
 	if err != nil {
 		l.Error(errors.New("创建Deployment失败, " + err.Error()))
 		return &core.CreateDeploymentResp{
@@ -212,7 +211,7 @@ func (d *Deployment) CreateDeployment(l *CreateDeploymentLogic, in *core.CreateD
 
 // 删除deployment
 func (d *Deployment) DeleteDeployment(l *DeleteDeploymentLogic, in *core.DeleteDeploymentReq) (resp *core.DeleteDeploymentResp, err error) {
-	err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Delete(context.TODO(), in.DeploymentName, metav1.DeleteOptions{})
+	err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Delete(l.ctx, in.DeploymentName, metav1.DeleteOptions{})
 	if err != nil {
 		l.Error(errors.New("删除Deployment失败, " + err.Error()))
 		return &core.DeleteDeploymentResp{
@@ -257,7 +256,7 @@ func (d *Deployment) RestartDeployment(l *RestartDeploymentLogic, in *core.Resta
 		}, errors.New("json序列化失败, " + err.Error())
 	}
 	//调用patch方法更新deployment
-	_, err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Patch(context.TODO(), in.DeploymentName, "application/strategic-merge-patch+json", patchByte, metav1.PatchOptions{})
+	_, err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Patch(l.ctx, in.DeploymentName, "application/strategic-merge-patch+json", patchByte, metav1.PatchOptions{})
 	if err != nil {
 		l.Error(errors.New("重启Deployment失败, " + err.Error()))
 		return &core.RestartDeploymentResp{
@@ -282,7 +281,7 @@ func (d *Deployment) UpdateDeployment(l *UpdateDeploymentLogic, in *core.UpdateD
 		}, errors.New("反序列化失败, " + err.Error())
 	}
 
-	_, err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Update(context.TODO(), deploy, metav1.UpdateOptions{})
+	_, err = l.svcCtx.K8s.AppsV1().Deployments(in.Namespace).Update(l.ctx, deploy, metav1.UpdateOptions{})
 	if err != nil {
 		l.Error(errors.New("更新Deployment失败, " + err.Error()))
 		return &core.UpdateDeploymentResp{
@@ -296,13 +295,13 @@ func (d *Deployment) UpdateDeployment(l *UpdateDeploymentLogic, in *core.UpdateD
 
 // 获取每个namespace的deployment数量
 func (d *Deployment) GetDeployNumPerNp(l *GetDeployNumPerNpLogic, in *core.GetDeployNumPerNpReq) (resp *core.GetDeployNumPerNpResp, err error) {
-	namespaceList, err := l.svcCtx.K8s.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+	namespaceList, err := l.svcCtx.K8s.CoreV1().Namespaces().List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 	deploysNps := make([]*core.GetDeployNumPerNpData, 0)
 	for _, namespace := range namespaceList.Items {
-		deploymentList, err := l.svcCtx.K8s.AppsV1().Deployments(namespace.Name).List(context.TODO(), metav1.ListOptions{})
+		deploymentList, err := l.svcCtx.K8s.AppsV1().Deployments(namespace.Name).List(l.ctx, metav1.ListOptions{})
 		if err != nil {
 			return &core.GetDeployNumPerNpResp{
 				Msg:  err.Error(),

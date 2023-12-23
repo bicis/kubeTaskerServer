@@ -26,7 +26,7 @@ func NewGetNodeDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetNodeDetailLogic) GetNodeDetail(in *core.GetNodeDetailReq) (*core.GetNodeDetailResp, error) {
-	node, err := l.svcCtx.K8s.CoreV1().Nodes().Get(context.TODO(), in.NodeName, metav1.GetOptions{})
+	node, err := l.svcCtx.K8s.CoreV1().Nodes().Get(l.ctx, in.NodeName, metav1.GetOptions{})
 	if err != nil {
 		l.Logger.Error(errors.New("获取Node详情失败, " + err.Error()))
 		return &core.GetNodeDetailResp{

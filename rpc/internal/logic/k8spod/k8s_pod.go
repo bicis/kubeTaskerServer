@@ -2,7 +2,6 @@ package k8spod
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/types/core"
@@ -16,7 +15,7 @@ type Pod struct{}
 
 // 获取pod列表,支持过滤,排序,分页
 func (p *Pod) GetPods(l *GetPodsLogic, in *core.GetPodsReq) (getPodsResp *core.GetPodsResp, err error) {
-	podList, err := l.svcCtx.K8s.CoreV1().Pods(in.Namespace).List(context.TODO(), metav1.ListOptions{})
+	podList, err := l.svcCtx.K8s.CoreV1().Pods(in.Namespace).List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		l.Error("获取Pod列表失败," + err.Error())
 		// 返回给上一层,最终返回给前端,前端捕获到后打印出来
@@ -59,7 +58,7 @@ func (p *Pod) GetPods(l *GetPodsLogic, in *core.GetPodsReq) (getPodsResp *core.G
 
 // 获取pod详情
 func (p *Pod) GetPodDetail(l *GetPodDetailLogic, in *core.GetPodDetailReq) (getPodDetailResp *core.GetPodDetailResp, err error) {
-	pod, err := l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Get(context.TODO(), in.PodName, metav1.GetOptions{})
+	pod, err := l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Get(l.ctx, in.PodName, metav1.GetOptions{})
 	if err != nil {
 		l.Error("获取Pod详情失败," + err.Error())
 		return &core.GetPodDetailResp{
@@ -76,7 +75,7 @@ func (p *Pod) GetPodDetail(l *GetPodDetailLogic, in *core.GetPodDetailReq) (getP
 
 // 删除Pod
 func (p *Pod) DeletePod(l *DeletePodLogic, in *core.DeletePodReq) (deletePodResp *core.DeletePodResp, err error) {
-	err = l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Delete(context.TODO(), in.PodName, metav1.DeleteOptions{})
+	err = l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Delete(l.ctx, in.PodName, metav1.DeleteOptions{})
 	if err != nil {
 		l.Error("删除Pod详情失败," + err.Error())
 		return &core.DeletePodResp{
@@ -100,7 +99,7 @@ func (p *Pod) UpdatePod(l *UpdatePodLogic, in *core.UpdatePodReq) (updatePodResp
 		}, errors.New("反序列化失败," + err.Error())
 	}
 	// 更新pod
-	_, err = l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Update(context.TODO(), pod, metav1.UpdateOptions{})
+	_, err = l.svcCtx.K8s.CoreV1().Pods(in.Namespace).Update(l.ctx, pod, metav1.UpdateOptions{})
 	if err != nil {
 		l.Error("更新Pod失败," + err.Error())
 		return &core.UpdatePodResp{
@@ -146,7 +145,7 @@ func (p *Pod) GetPodLog(l *GetPodLogLogic, in *core.GetPodLogReq) (getPodLogResp
 	// 获取一个request实例
 	req := l.svcCtx.K8s.CoreV1().Pods(in.Namespace).GetLogs(in.PodName, option)
 	// 发起stream连接,获取到Response.body
-	podLogs, err := req.Stream(context.TODO())
+	podLogs, err := req.Stream(l.ctx)
 	if err != nil {
 		l.Error("更新Pod失败," + err.Error())
 		return &core.GetPodLogResp{
@@ -176,14 +175,14 @@ func (p *Pod) GetPodLog(l *GetPodLogLogic, in *core.GetPodLogReq) (getPodLogResp
 
 // 获取每个namespace中pod的数量
 func (p *Pod) GetPodNumPerNp(l *GetPodNumPerNpLogic, in *core.GetPodNumPerNpReq) (getPodNumPerNpResp *core.GetPodNumPerNpResp, err error) {
-	namespaceList, err := l.svcCtx.K8s.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+	namespaceList, err := l.svcCtx.K8s.CoreV1().Namespaces().List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 	podsNps := make([]*core.GetPodNumPerNpData, 0)
 	for _, namespace := range namespaceList.Items {
 		//获取pod列表
-		podList, err := l.svcCtx.K8s.CoreV1().Pods(namespace.Name).List(context.TODO(), metav1.ListOptions{})
+		podList, err := l.svcCtx.K8s.CoreV1().Pods(namespace.Name).List(l.ctx, metav1.ListOptions{})
 		if err != nil {
 			return &core.GetPodNumPerNpResp{
 				Msg:  err.Error(),

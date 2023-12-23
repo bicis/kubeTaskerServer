@@ -28,7 +28,7 @@ func NewGetNodesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetNodes
 func (l *GetNodesLogic) GetNodes(in *core.GetNodesReq) (*core.GetNodesResp, error) {
 	// todo: add your logic here and delete this line
 	//获取nodeList类型的node列表
-	nodeList, err := l.svcCtx.K8s.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	nodeList, err := l.svcCtx.K8s.CoreV1().Nodes().List(l.ctx, metav1.ListOptions{})
 	if err != nil {
 		l.Logger.Error(errors.New("获取Node列表失败, " + err.Error()))
 		return &core.GetNodesResp{

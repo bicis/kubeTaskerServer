@@ -27,7 +27,7 @@ func NewGetNamespaceDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *GetNamespaceDetailLogic) GetNamespaceDetail(in *core.GetNamespaceDetailReq) (*core.GetNamespaceDetailResp, error) {
 	// todo: add your logic here and delete this line
-	namespace, err := l.svcCtx.K8s.CoreV1().Namespaces().Get(context.TODO(), in.NamespaceName, metav1.GetOptions{})
+	namespace, err := l.svcCtx.K8s.CoreV1().Namespaces().Get(l.ctx, in.NamespaceName, metav1.GetOptions{})
 	if err != nil {
 		l.Logger.Error(errors.New("获取Namespace详情失败, " + err.Error()))
 		return &core.GetNamespaceDetailResp{
