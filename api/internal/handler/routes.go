@@ -927,6 +927,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/namespace/create_namespace",
+				Handler: k8snamespace.CreateNamespaceHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/k8s_namespace/get_namespaces",
 				Handler: k8snamespace.GetNamespacesHandler(serverCtx),
 			},

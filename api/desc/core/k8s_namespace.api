@@ -1,5 +1,21 @@
+import "./../base.api"
+
 type (
-    // GetNamespacesReq | 请求获取命名空间list
+    // CreateNamespaceReq
+    CreateNamespaceReq {
+        // Namespace
+        // k8s.io.api.core.v1.Namespace
+        Namespace  TypeNull `json:"namespace"`
+    }
+
+        // CreateNamespaceResp
+    CreateNamespaceResp {
+        // Msg
+        Msg  string `json:"msg"`
+    }
+
+
+        // GetNamespacesReq | 请求获取命名空间list
     GetNamespacesReq {
         // FilterName
         FilterName  string `json:"filter_name,optional"`
@@ -72,6 +88,10 @@ type (
 )
 
 service Core{
+    // createNamespace
+    @handler createNamespace
+    post /namespace/create_namespace (CreateNamespaceReq) returns (CreateNamespaceResp)
+
     // getNamespaces
     @handler getNamespaces
     post /k8s_namespace/get_namespaces (GetNamespacesReq) returns (GetNamespacesResp)

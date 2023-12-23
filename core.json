@@ -2085,6 +2085,34 @@
         }
       }
     },
+    "/namespace/create_namespace": {
+      "post": {
+        "description": "createNamespace",
+        "tags": [
+          "k8snamespace"
+        ],
+        "summary": "createNamespace",
+        "operationId": "CreateNamespace",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/CreateNamespaceReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CreateNamespaceResp",
+            "schema": {
+              "$ref": "#/definitions/CreateNamespaceResp"
+            }
+          }
+        }
+      }
+    },
     "/oauth/login": {
       "post": {
         "description": "Oauth log in | Oauth 登录",
@@ -4309,6 +4337,28 @@
     },
     "CreateDeploymentResp": {
       "description": "CreateDeploymentResp",
+      "type": "object",
+      "properties": {
+        "msg": {
+          "description": "Msg",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "github.com/kubeTasker/kubeTaskerServer/api/internal/types"
+    },
+    "CreateNamespaceReq": {
+      "description": "CreateNamespaceReq",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/TypeNull"
+        }
+      },
+      "x-go-package": "github.com/kubeTasker/kubeTaskerServer/api/internal/types"
+    },
+    "CreateNamespaceResp": {
+      "description": "CreateNamespaceResp",
       "type": "object",
       "properties": {
         "msg": {

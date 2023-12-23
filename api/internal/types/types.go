@@ -2082,6 +2082,21 @@ type UpdateServiceResp struct {
 	Msg string `json:"msg,optional"`
 }
 
+// CreateNamespaceReq | 创建命名空间
+// swagger:model CreateNamespaceReq
+type CreateNamespaceReq struct {
+	// Namespace
+	// k8s.io.api.core.v1.Namespace
+	Namespace *v1.Namespace `json:"namespace"`
+}
+
+// CreateNamespaceResp | 创建命名空间
+// swagger:model CreateNamespaceResp
+type CreateNamespaceResp struct {
+	// Msg
+	Msg string `json:"msg"`
+}
+
 // GetNamespacesReq | 请求获取命名空间list
 // swagger:model GetNamespacesReq
 type GetNamespacesReq struct {
