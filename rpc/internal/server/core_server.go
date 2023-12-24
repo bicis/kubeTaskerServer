@@ -17,6 +17,7 @@ import (
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/k8snamespace"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/k8snode"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/k8spod"
+	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/k8srolebinding"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/k8sservice"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/menu"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/internal/logic/oauthprovider"
@@ -286,6 +287,11 @@ func (s *CoreServer) GetPodLog(ctx context.Context, in *core.GetPodLogReq) (*cor
 func (s *CoreServer) GetPodNumPerNp(ctx context.Context, in *core.GetPodNumPerNpReq) (*core.GetPodNumPerNpResp, error) {
 	l := k8spod.NewGetPodNumPerNpLogic(ctx, s.svcCtx)
 	return l.GetPodNumPerNp(in)
+}
+
+func (s *CoreServer) CreateRoleBinding(ctx context.Context, in *core.CreateRoleBindingReq) (*core.CreateRoleBindingResp, error) {
+	l := k8srolebinding.NewCreateRoleBindingLogic(ctx, s.svcCtx)
+	return l.CreateRoleBinding(in)
 }
 
 func (s *CoreServer) GetServices(ctx context.Context, in *core.GetServicesReq) (*core.GetServicesResp, error) {

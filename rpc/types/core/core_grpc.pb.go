@@ -68,6 +68,7 @@ const (
 	Core_GetPodContainer_FullMethodName                     = "/core.Core/getPodContainer"
 	Core_GetPodLog_FullMethodName                           = "/core.Core/getPodLog"
 	Core_GetPodNumPerNp_FullMethodName                      = "/core.Core/getPodNumPerNp"
+	Core_CreateRoleBinding_FullMethodName                   = "/core.Core/createRoleBinding"
 	Core_GetServices_FullMethodName                         = "/core.Core/getServices"
 	Core_GetServiceDetail_FullMethodName                    = "/core.Core/getServiceDetail"
 	Core_CreateService_FullMethodName                       = "/core.Core/createService"
@@ -215,6 +216,8 @@ type CoreClient interface {
 	GetPodLog(ctx context.Context, in *GetPodLogReq, opts ...grpc.CallOption) (*GetPodLogResp, error)
 	// group: k8spod
 	GetPodNumPerNp(ctx context.Context, in *GetPodNumPerNpReq, opts ...grpc.CallOption) (*GetPodNumPerNpResp, error)
+	// group: k8srolebinding
+	CreateRoleBinding(ctx context.Context, in *CreateRoleBindingReq, opts ...grpc.CallOption) (*CreateRoleBindingResp, error)
 	// group: k8sservice
 	GetServices(ctx context.Context, in *GetServicesReq, opts ...grpc.CallOption) (*GetServicesResp, error)
 	// group: k8sservice
@@ -749,6 +752,15 @@ func (c *coreClient) GetPodNumPerNp(ctx context.Context, in *GetPodNumPerNpReq, 
 	return out, nil
 }
 
+func (c *coreClient) CreateRoleBinding(ctx context.Context, in *CreateRoleBindingReq, opts ...grpc.CallOption) (*CreateRoleBindingResp, error) {
+	out := new(CreateRoleBindingResp)
+	err := c.cc.Invoke(ctx, Core_CreateRoleBinding_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *coreClient) GetServices(ctx context.Context, in *GetServicesReq, opts ...grpc.CallOption) (*GetServicesResp, error) {
 	out := new(GetServicesResp)
 	err := c.cc.Invoke(ctx, Core_GetServices_FullMethodName, in, out, opts...)
@@ -1206,6 +1218,8 @@ type CoreServer interface {
 	GetPodLog(context.Context, *GetPodLogReq) (*GetPodLogResp, error)
 	// group: k8spod
 	GetPodNumPerNp(context.Context, *GetPodNumPerNpReq) (*GetPodNumPerNpResp, error)
+	// group: k8srolebinding
+	CreateRoleBinding(context.Context, *CreateRoleBindingReq) (*CreateRoleBindingResp, error)
 	// group: k8sservice
 	GetServices(context.Context, *GetServicesReq) (*GetServicesResp, error)
 	// group: k8sservice
@@ -1442,6 +1456,9 @@ func (UnimplementedCoreServer) GetPodLog(context.Context, *GetPodLogReq) (*GetPo
 }
 func (UnimplementedCoreServer) GetPodNumPerNp(context.Context, *GetPodNumPerNpReq) (*GetPodNumPerNpResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPodNumPerNp not implemented")
+}
+func (UnimplementedCoreServer) CreateRoleBinding(context.Context, *CreateRoleBindingReq) (*CreateRoleBindingResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRoleBinding not implemented")
 }
 func (UnimplementedCoreServer) GetServices(context.Context, *GetServicesReq) (*GetServicesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServices not implemented")
@@ -2455,6 +2472,24 @@ func _Core_GetPodNumPerNp_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Core_CreateRoleBinding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRoleBindingReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreServer).CreateRoleBinding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Core_CreateRoleBinding_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreServer).CreateRoleBinding(ctx, req.(*CreateRoleBindingReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Core_GetServices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetServicesReq)
 	if err := dec(in); err != nil {
@@ -3359,6 +3394,10 @@ var Core_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getPodNumPerNp",
 			Handler:    _Core_GetPodNumPerNp_Handler,
+		},
+		{
+			MethodName: "createRoleBinding",
+			Handler:    _Core_CreateRoleBinding_Handler,
 		},
 		{
 			MethodName: "getServices",

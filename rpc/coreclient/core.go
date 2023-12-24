@@ -25,6 +25,8 @@ type (
 	CreateDeploymentResp     = core.CreateDeploymentResp
 	CreateNamespaceReq       = core.CreateNamespaceReq
 	CreateNamespaceResp      = core.CreateNamespaceResp
+	CreateRoleBindingReq     = core.CreateRoleBindingReq
+	CreateRoleBindingResp    = core.CreateRoleBindingResp
 	CreateServiceReq         = core.CreateServiceReq
 	CreateServiceResp        = core.CreateServiceResp
 	DeleteConfigMapReq       = core.DeleteConfigMapReq
@@ -186,6 +188,7 @@ type (
 		GetPodContainer(ctx context.Context, in *GetPodContainerReq, opts ...grpc.CallOption) (*GetPodContainerResp, error)
 		GetPodLog(ctx context.Context, in *GetPodLogReq, opts ...grpc.CallOption) (*GetPodLogResp, error)
 		GetPodNumPerNp(ctx context.Context, in *GetPodNumPerNpReq, opts ...grpc.CallOption) (*GetPodNumPerNpResp, error)
+		CreateRoleBinding(ctx context.Context, in *CreateRoleBindingReq, opts ...grpc.CallOption) (*CreateRoleBindingResp, error)
 		GetServices(ctx context.Context, in *GetServicesReq, opts ...grpc.CallOption) (*GetServicesResp, error)
 		GetServiceDetail(ctx context.Context, in *GetServiceDetailReq, opts ...grpc.CallOption) (*GetServiceDetailResp, error)
 		CreateService(ctx context.Context, in *CreateServiceReq, opts ...grpc.CallOption) (*CreateServiceResp, error)
@@ -490,6 +493,11 @@ func (m *defaultCore) GetPodLog(ctx context.Context, in *GetPodLogReq, opts ...g
 func (m *defaultCore) GetPodNumPerNp(ctx context.Context, in *GetPodNumPerNpReq, opts ...grpc.CallOption) (*GetPodNumPerNpResp, error) {
 	client := core.NewCoreClient(m.cli.Conn())
 	return client.GetPodNumPerNp(ctx, in, opts...)
+}
+
+func (m *defaultCore) CreateRoleBinding(ctx context.Context, in *CreateRoleBindingReq, opts ...grpc.CallOption) (*CreateRoleBindingResp, error) {
+	client := core.NewCoreClient(m.cli.Conn())
+	return client.CreateRoleBinding(ctx, in, opts...)
 }
 
 func (m *defaultCore) GetServices(ctx context.Context, in *GetServicesReq, opts ...grpc.CallOption) (*GetServicesResp, error) {

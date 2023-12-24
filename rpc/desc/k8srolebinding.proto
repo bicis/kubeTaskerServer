@@ -1,0 +1,14 @@
+syntax="proto3";
+
+message CreateRoleBindingReq {
+  string namespace = 1;
+}
+
+message CreateRoleBindingResp {
+  string msg = 1;
+}
+
+service Core {
+  // group: k8srolebinding
+  rpc createRoleBinding (CreateRoleBindingReq) returns (CreateRoleBindingResp);
+}

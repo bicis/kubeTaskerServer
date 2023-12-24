@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/logic/k8snamespace"
 	"github.com/kubeTasker/kubeTaskerServer/api/internal/svc"
 	"github.com/kubeTasker/kubeTaskerServer/api/internal/types"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/types/core"
@@ -25,6 +25,17 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 }
 
 func (l *DeleteUserLogic) DeleteUser(req *types.UUIDsReq) (resp *types.BaseMsgResp, err error) {
+	for i := range req.Ids {
+		lu := NewGetUserByIdLogic(l.ctx, l.svcCtx)
+		respLu, err := lu.GetUserById(&types.UUIDReq{
+			Id: req.Ids[i],
+		})
+		if err != nil {
+			continue
+		}
+		ln := k8snamespace.NewDeleteNamespaceLogic(l.ctx, l.svcCtx)
+		_, _ = ln.DeleteNamespace(&types.DeleteNamespaceReq{NamespaceName: *respLu.Data.Username})
+	}
 	result, err := l.svcCtx.CoreRpc.DeleteUser(l.ctx, &core.UUIDsReq{
 		Ids: req.Ids,
 	})
