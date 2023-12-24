@@ -1,6 +1,9 @@
 package publicuser
 
 import (
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/logic/k8snamespace"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -35,6 +38,17 @@ func RegisterByEmailHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := publicuser.NewRegisterByEmailLogic(r.Context(), svcCtx)
 		resp, err := l.RegisterByEmail(&req)
+		ln := k8snamespace.NewCreateNamespaceLogic(r.Context(), svcCtx)
+		_, _ = ln.CreateNamespace(&types.CreateNamespaceReq{
+			Namespace: &v1.Namespace{
+				TypeMeta: metav1.TypeMeta{},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: req.Username,
+				},
+				Spec:   v1.NamespaceSpec{},
+				Status: v1.NamespaceStatus{},
+			},
+		})
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
 			httpx.ErrorCtx(r.Context(), w, err)
