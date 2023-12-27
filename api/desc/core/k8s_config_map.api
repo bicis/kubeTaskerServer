@@ -72,9 +72,9 @@ type (
 )
 
 @server(
-    //jwt: Auth
+    jwt: Auth
     group: k8sconfigmap
-    //middleware: Authority
+    middleware: Authority
 )
 service Core {
     // getConfigMaps | 获取configmap列表，支持过滤、排序、分页

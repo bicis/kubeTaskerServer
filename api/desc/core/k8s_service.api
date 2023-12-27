@@ -90,9 +90,9 @@ type (
     }
 )
 @server(
-    //jwt: Auth
+    jwt: Auth
     group: k8sservice
-    //middleware: Authority
+    middleware: Authority
 )
 service Core {
     // getServices | 获取service列表，支持过滤、排序、分页

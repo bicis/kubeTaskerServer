@@ -118,9 +118,9 @@ type (
     }
 )
 @server(
-    //jwt: Auth
+    jwt: Auth
     group: k8spod
-    //middleware: Authority
+    middleware: Authority
 )
 service Core {
     // getPods | 获取pod列表,支持分页,过滤,排序

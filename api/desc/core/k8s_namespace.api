@@ -82,9 +82,9 @@ type (
 )
 
 @server(
-    //jwt: Auth
+    jwt: Auth
     group: k8snamespace
-    //middleware: Authority
+    middleware: Authority
 )
 
 service Core{
