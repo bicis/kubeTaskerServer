@@ -2,16 +2,18 @@ package publicuser
 
 import (
 	"context"
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/logic/k8snamespace"
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/logic/k8srolebinding"
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/svc"
+	"github.com/kubeTasker/kubeTaskerServer/api/internal/types"
 	"github.com/kubeTasker/kubeTaskerServer/rpc/types/core"
 	"github.com/suyuan32/simple-admin-common/enum/errorcode"
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/errorx"
-
-	"github.com/kubeTasker/kubeTaskerServer/api/internal/svc"
-	"github.com/kubeTasker/kubeTaskerServer/api/internal/types"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type RegisterByEmailLogic struct {
@@ -60,7 +62,21 @@ func (l *RegisterByEmailLogic) RegisterByEmail(req *types.RegisterByEmailReq) (r
 		if err != nil {
 			logx.Errorw("failed to delete captcha in redis", logx.Field("detail", err))
 		}
-
+		ln := k8snamespace.NewCreateNamespaceLogic(l.ctx, l.svcCtx)
+		_, _ = ln.CreateNamespace(&types.CreateNamespaceReq{
+			Namespace: &v1.Namespace{
+				TypeMeta: metav1.TypeMeta{},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: req.Username,
+				},
+				Spec:   v1.NamespaceSpec{},
+				Status: v1.NamespaceStatus{},
+			},
+		})
+		lr := k8srolebinding.NewCreateRoleBindingLogic(l.ctx, l.svcCtx)
+		_, _ = lr.CreateRoleBinding(&types.CreateRoleBindingReq{
+			Namespace: req.Username,
+		})
 		resp = &types.BaseMsgResp{
 			Msg: l.svcCtx.Trans.Trans(l.ctx, "login.signupSuccessTitle"),
 		}

@@ -1,0 +1,28 @@
+type (
+    // CreateRoleBindingResp
+    CreateRoleBindingResp {
+        // Msg
+        Msg  string `json:"msg"`
+
+    }
+
+        // CreateRoleBindingReq
+    CreateRoleBindingReq {
+        // Namespace
+        Namespace  string `json:"namespace"`
+
+    }
+
+)
+
+@server (
+    //jwt: Auth
+    group: k8srolebinding
+    //middleware: Authority
+)
+
+service Core{
+    // createRoleBinding
+    @handler createRoleBinding
+    post /k8srolebinding/create_role_binding (CreateRoleBindingReq) returns (CreateRoleBindingResp)
+}

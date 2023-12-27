@@ -1825,6 +1825,34 @@
         }
       }
     },
+    "/k8srolebinding/create_role_binding": {
+      "post": {
+        "description": "createRoleBinding",
+        "tags": [
+          "k8srolebinding"
+        ],
+        "summary": "createRoleBinding",
+        "operationId": "CreateRoleBinding",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/CreateRoleBindingReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CreateRoleBindingResp",
+            "schema": {
+              "$ref": "#/definitions/CreateRoleBindingResp"
+            }
+          }
+        }
+      }
+    },
     "/k8sservice/create_service": {
       "post": {
         "description": "createService",
@@ -4391,6 +4419,30 @@
           "format": "uint64",
           "maximum": 1000,
           "x-go-name": "RoleId"
+        }
+      },
+      "x-go-package": "github.com/kubeTasker/kubeTaskerServer/api/internal/types"
+    },
+    "CreateRoleBindingReq": {
+      "description": "CreateRoleBindingReq",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "description": "Namespace",
+          "type": "string",
+          "x-go-name": "Namespace"
+        }
+      },
+      "x-go-package": "github.com/kubeTasker/kubeTaskerServer/api/internal/types"
+    },
+    "CreateRoleBindingResp": {
+      "description": "CreateRoleBindingResp",
+      "type": "object",
+      "properties": {
+        "msg": {
+          "description": "Msg",
+          "type": "string",
+          "x-go-name": "Msg"
         }
       },
       "x-go-package": "github.com/kubeTasker/kubeTaskerServer/api/internal/types"

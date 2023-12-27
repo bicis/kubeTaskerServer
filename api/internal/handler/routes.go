@@ -18,6 +18,7 @@ import (
 	k8snamespace "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/k8snamespace"
 	k8snode "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/k8snode"
 	k8spod "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/k8spod"
+	k8srolebinding "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/k8srolebinding"
 	k8sservice "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/k8sservice"
 	menu "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/menu"
 	messagesender "github.com/kubeTasker/kubeTaskerServer/api/internal/handler/messagesender"
@@ -959,6 +960,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/k8s_node/get_node_detail",
 				Handler: k8snode.GetNodeDetailHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/k8srolebinding/create_role_binding",
+				Handler: k8srolebinding.CreateRoleBindingHandler(serverCtx),
 			},
 		},
 	)

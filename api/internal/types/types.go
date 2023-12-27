@@ -2208,3 +2208,11 @@ type GetNodesData struct {
 	Items []*v1.Node `json:"items,optional"`
 	Total int64      `json:"total,optional"`
 }
+
+type CreateRoleBindingReq struct {
+	Namespace string `json:"namespace,optional"`
+}
+
+type CreateRoleBindingResp struct {
+	Msg string `json:"msg,optional"`
+}
