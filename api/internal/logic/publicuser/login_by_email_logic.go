@@ -36,7 +36,7 @@ func (l *LoginByEmailLogic) LoginByEmail(req *types.LoginByEmailReq) (resp *type
 	}
 
 	captchaData, err := l.svcCtx.Redis.Get("CAPTCHA_" + req.Email)
-	if err != nil {
+	if err != nil || captchaData == "" {
 		logx.Errorw("failed to get captcha data in redis for email validation", logx.Field("detail", err),
 			logx.Field("data", req))
 		return nil, errorx.NewCodeInvalidArgumentError(i18n.Failed)
